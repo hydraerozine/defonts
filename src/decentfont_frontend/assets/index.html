@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DecentFont</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>DecentFont</h1>
+        <button id="login-btn">Login with Internet Identity</button>
+    </header>
+    <main>
+        <section id="user-section">
+            <h2>User Management</h2>
+            <button id="add-user-btn">Add User</button>
+            <button id="get-user-btn">Get User</button>
+            <div id="user-info"></div>
+        </section>
+        <section id="asset-section">
+            <h2>Asset Management</h2>
+            <button id="add-asset-btn">Add Asset</button>
+            <div id="asset-list"></div>
+            <button id="load-more-btn">Load More</button>
+        </section>
+        <section id="asset-preview">
+            <h2>Asset Preview</h2>
+            <input type="number" id="preview-asset-id" placeholder="Asset ID">
+            <button id="get-preview-btn">Get Preview</button>
+            <div id="preview-info"></div>
+        </section>
+        <section id="full-asset">
+            <h2>Full Asset</h2>
+            <input type="number" id="full-asset-id" placeholder="Asset ID">
+            <button id="get-full-asset-btn">Get Full Asset</button>
+            <div id="full-asset-info"></div>
+        </section>
+    </main>
+    <!-- The bundled script will be injected here by HtmlWebpackPlugin -->
+</body>
+</html>
