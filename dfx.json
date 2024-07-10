@@ -1,0 +1,25 @@
+{
+  "canisters": {
+    "decentfont_backend": {
+      "main": "src/decentfont_backend/main.mo",
+      "type": "motoko"
+    },
+    "decentfont_frontend": {
+      "dependencies": [
+        "decentfont_backend"
+      ],
+      "source": [
+        "src/decentfont_frontend/assets"
+      ],
+      "type": "assets"
+    }
+  },
+  "defaults": {
+    "build": {
+      "args": "",
+      "packtool": ""
+    }
+  },
+  "output_env_file": ".env",
+  "version": 1
+}
