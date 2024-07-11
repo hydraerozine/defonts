@@ -1,3 +1,5 @@
+import Nat64 "mo:base/Nat64";
+
 module {
     public type User = {
         id                : Principal;
@@ -29,7 +31,7 @@ module {
         preview             : [Blob];
         tags                : [Tag];
         licenseType         : LicenseType;
-        price               : Float;
+        price               : Nat64;
         currencyType        : CurrencyType;
         royaltyPercentage   : Float;
         communityPercentage : Float;
@@ -52,7 +54,7 @@ module {
         preview        : [Blob];
         tags           : [Tag];
         licenseType    : LicenseType;
-        price          : Float;
+        price          : Nat64;
         currencyType   : CurrencyType;
         creatorAddress : Principal;
         category       : Category;
@@ -71,7 +73,7 @@ module {
         preview        : [Blob];
         tags           : [Tag];
         licenseType    : LicenseType;
-        price          : Float;
+        price          : Nat64;
         currencyType   : CurrencyType;
         creatorAddress : Principal;
         category       : Category;
@@ -91,8 +93,9 @@ module {
         name        : Text;
         description : Text;
     };
-    public type LicenseType  = { #FreePersonalUse; #CommercialUse; #Licensed; };
-    public type CurrencyType = { #ICP; #DFONT; #CKETH; #CKBTC; #FIAT; };
-    public type Category     = { #Serif; #SansSerif; #Script; #Display; #Handwritten; };
-    public type Status       = { #Active; #Inactive; };
+    public type LicenseType   = { #FreePersonalUse; #CommercialUse; #Licensed; };
+    public type CurrencyType  = { #ICP; #DFONT; #CKETH; #CKBTC; #FIAT; };
+    public type Category      = { #Serif; #SansSerif; #Script; #Display; #Handwritten; };
+    public type Status        = { #Active; #Inactive; };
+    public type PaymentResult = { #Success; #InsufficientBalance; #UnknownAsset; #UnknownUser; #PaymentFailed; #UnknownError; };
 };

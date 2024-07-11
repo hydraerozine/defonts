@@ -4,12 +4,15 @@ import HashMap   "mo:base/HashMap";
 import Principal "mo:base/Principal";
 import Nat       "mo:base/Nat";
 
-import Types "/types";
+import Types   "./types";
+import Ledger  "./ledger_interface";
+import Account "./Account";
 
-shared(msg) actor class DecentFont() {
+shared(msg) actor class DecentFont(_owner : Principal) {
 
-    private var NULL_PRINCIPAL: Principal = Principal.fromText("aaaaa-aa");
-    private var ANON_PRINCIPAL: Principal = Principal.fromText("2vxsx-fae");
+    private var NULL_PRINCIPAL : Principal = Principal.fromText("aaaaa-aa");
+    private var ANON_PRINCIPAL : Principal = Principal.fromText("2vxsx-fae");
+    private let ledger         : Ledger.Interface = actor("ryjl3-tyaaa-aaaaa-aaaba-cai");
     private stable var idAsset : Nat = 1;
 
     func _idEqualNat( a : Nat, b : Nat) : Bool {
@@ -243,6 +246,68 @@ shared(msg) actor class DecentFont() {
                     };
                     case (#Inactive){
                         return null;
+                    };
+                };
+            };
+        };
+    };
+
+    /// ICP
+    /// Get the subaccount of a user on this canister
+    func getUserSubaccount(u : Principal) : Account.AccountIdentifier{
+        return Account.accountIdentifier(Principal.fromActor(actor("zdqy4-6iaaa-aaaap-qhoaa-cai")), Account.principalToSubaccount(u));
+    };
+
+    /// Get the balance of the user
+    public shared(msg) func getICPBalance() : async {e8s:Nat64} {
+        let {e8s = payment} = await ledger.account_balance({
+            account = getUserSubaccount(msg.caller)
+        });
+    };
+
+    /// User calling this function pays for an asset with ICP
+    /// If the asset does not exist it will return UnknownAsset
+    /// If the user does not have enough balance it will return InsufficientBalance
+    /// If the payment fails it will return PaymentFailed
+    /// If the payment is successful it will return Success
+    /// If the payment is successful it will add the asset to the user's purchased list
+    public shared(msg) func payForAsset(assetId : Nat) : async Types.PaymentResult {
+        let asset = await getAsset(assetId);
+        switch(asset){
+            case (null){
+                return #UnknownAsset;
+            };
+            case (?a){
+                let {e8s = balance} = await ledger.account_balance({
+                    account = getUserSubaccount(msg.caller)
+                });
+                if(balance < a.price){
+                    return #InsufficientBalance;
+                };
+                let owner_account = getUserSubaccount(a.creatorAddress);
+                let res_payment = await ledger.transfer({
+                    memo = 0;
+                    amount = {e8s = a.price};
+                    fee = {e8s = 10000};
+                    from_subaccount = null;
+                    to = owner_account;
+                    created_at_time = null;
+                });
+                switch(res_payment){
+                    case (#Ok(transfer_result)){
+                        var _userPurchased = userPurchases.get(msg.caller);
+                        switch(_userPurchased){
+                            case (null){
+                                userPurchases.put(msg.caller, [assetId]);
+                            };
+                            case (?_p){
+                                userPurchases.put(msg.caller, Array.append(_p, [assetId]));
+                            };
+                        };
+                        return #Success;
+                    };
+                    case (#Err(transfer_error)){
+                        return #PaymentFailed;
                     };
                 };
             };
